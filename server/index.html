@@ -1,0 +1,59 @@
+<!DOCTYPE html> 
+<html> 
+<head>  
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.js"></script>
+	<script src="jsPower.js"></script>
+	<script type="text/javascript">
+	
+		var engine = new jsPowerEngine();
+		var animeList = new Array();
+		$(function() {
+			engine.parseHTMLtag(
+				"http://www.anime-shinden.info/index.php?do=cat&category=online-glowna", "a", function(data) {
+					for(i in data) {
+						if(data[i].text == ".hack//Roots") {
+							data.splice(0, i);
+						}
+						if(data[i].text == "Zombie Loan") {
+							data.splice(i+1,data.length-1);
+						}
+					}
+					animeTitles = data;
+					var codeToAppend = "";
+					for(i in animeTitles) {
+						if (i>100) break;
+						codeToAppend += "<li>" + animeTitles[i].html + "</li>";
+					}
+					$('ul').empty().append(codeToAppend).listview('refresh');
+			}, true);		
+		});
+		function loadAnimesStartingWith(char) {
+			for(i in animeTitles) {
+				codeToAppend += "<li>" + animeTitles[i] + "</li>";
+			}
+			$('ul').empty().append(codeToAppend).listview('refresh');
+		}
+	</script>
+</head> 
+<body> 
+
+<div data-role="page">
+
+	<div data-role="header">
+		<h1>Anime Player2</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<ul id="animelist" data-role="listview" data-filter="true" data-theme="d">
+			<li>Downloading...</li>
+		</ul>
+				
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+</html>

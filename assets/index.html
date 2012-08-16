@@ -1,0 +1,43 @@
+<!DOCTYPE html> 
+<html> 
+<head>  
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.js"></script>
+	<script src="jsPower.js"></script>
+	<script type="text/javascript">
+	
+		var engine = new jsPowerEngine(); 
+	
+	    function showAndroidToast(toast) {
+		
+	      engine.getURLContent("http://wp.pl", function(code) {
+		
+				engine.alert(code);
+			}, true);
+	    }
+	</script>
+</head> 
+<body> 
+
+<div data-role="page">
+
+	<div data-role="header">
+		<h1>Sample Application</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<ul data-role="listview" data-inset="true" data-filter="true">
+			<li><a href="javascript:showAndroidToast('Hello Android!');return false;">Acura</a></li>
+			<li><a data-ajax="true" href="index2.html">Audi</a></li>
+			<li><a href="javascript:alert('test2'); return false;">BMW</a></li>
+				<li><a href="javascript:$.mobile.loading( 'show' );">Ferrari</a></li>
+		</ul>
+				
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+</html>
