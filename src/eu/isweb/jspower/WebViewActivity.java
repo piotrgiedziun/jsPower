@@ -24,6 +24,7 @@ public class WebViewActivity extends Activity {
 	WebSettings browserSettings;
 	jsPowerEngine jsPower;
 	SharedPreferences pref;
+	String URL;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,26 @@ public class WebViewActivity extends Activity {
 		}
 	}
 	
+	private void showErrorList() {
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(jsPower.getLogs().toString())
+		       .setCancelable(false)
+		       .setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   dialog.cancel();
+		           }
+		       })
+		       .setNegativeButton("Clear", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		                jsPower.clearLogs();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	private void connectIPMode(boolean force) {
 		pref = getSharedPreferences(IDs.devIP, Activity.MODE_PRIVATE);
 		
@@ -89,11 +110,13 @@ public class WebViewActivity extends Activity {
                 	SharedPreferences.Editor editor = pref.edit();
                 	editor.putString("ip", ipAddress.getText().toString());
                 	editor.commit();
+                	URL = "http://"+ipAddress.getText().toString() + "/index.html";
                 	browser.loadUrl("http://"+ipAddress.getText().toString() + "/index.html");
                 }
             })
             .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
+                	URL = "file:///android_asset/index.html";
                 	browser.loadUrl("file:///android_asset/index.html");
                 }
             })
@@ -128,6 +151,12 @@ public class WebViewActivity extends Activity {
 	            return true;
 	        case R.id.menu_changeIP:
 	        	connectIPMode(true);
+	            return true;
+	        case R.id.menu_home:
+	        	browser.loadUrl(URL);
+	            return true;
+	        case R.id.menu_error:
+	        	showErrorList();
 	            return true;
     	}
     	return super.onOptionsItemSelected(item);

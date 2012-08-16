@@ -40,7 +40,7 @@ import android.util.Log;
 			    result.add(json.toString());
 			}
 			Log.d(IDs.JD, new JSONArray(result).toString());
-			return new JSONArray(result).toString();
+			return result.toString();
         }
         
 }

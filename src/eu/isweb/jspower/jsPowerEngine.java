@@ -1,5 +1,7 @@
 package eu.isweb.jspower;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.util.Log;
 import android.webkit.WebView;
@@ -11,6 +13,7 @@ public class jsPowerEngine {
     Activity mActivity;
     jsPowerEngine instance;
     WebView browser;
+    ArrayList<String> logList = new ArrayList<String>();
 
     jsPowerEngine(Activity a, WebView b) {
         mActivity = a;
@@ -33,15 +36,15 @@ public class jsPowerEngine {
     	
     	command = command.substring(0,command.length()-1);
     	command += ");";
-    	this.log(command);
+
     	this.execute(command);
     }
     
     private void execute(final String command) {
     	browser.post(new Runnable() {
-                public void run() { 
-                	browser.loadUrl("javascript:" + command); 
-                }
+    		public void run() { 
+    			browser.loadUrl("javascript:" + command); 
+    		}  
         }); 
     }
     
@@ -66,12 +69,21 @@ public class jsPowerEngine {
     }
     
     public void log(String message) {
+    	logList.add(message);
     	Log.d(IDs.JD, message);
+    }
+    
+    public ArrayList<String> getLogs() {
+    	return this.logList;
     }
     
     public String getVersion() {
     	return jsPowerEngine.version;
 
     }
+
+	public void clearLogs() {
+		this.logList.clear();
+	}
     
 }

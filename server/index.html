@@ -7,12 +7,13 @@
 	<script src="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.js"></script>
 	<script src="jsPower.js"></script>
 	<script type="text/javascript">
-	
+		console.log("hello there");
 		var engine = new jsPowerEngine();
 		var animeList = new Array();
 		$(function() {
 			engine.parseHTMLtag(
 				"http://www.anime-shinden.info/index.php?do=cat&category=online-glowna", "a", function(data) {
+					
 					for(i in data) {
 						if(data[i].text == ".hack//Roots") {
 							data.splice(0, i);
@@ -21,17 +22,38 @@
 							data.splice(i+1,data.length-1);
 						}
 					}
-					animeTitles = data;
+					animeList = data;
 					var codeToAppend = "";
-					for(i in animeTitles) {
-						if (i>100) break;
-						codeToAppend += "<li>" + animeTitles[i].html + "</li>";
+					for(i in animeList) {
+						codeToAppend += "<li class='ui-screen-hidden'>" + animeList[i].html + "</li>";
 					}
 					$('ul').empty().append(codeToAppend).listview('refresh');
-			}, true);		
+			}, true);
+			$("#search").bind( "keyup change", function() {
+				var searchValue = $("#search").val();
+				engine.alert(searchValue);
+				$.each($("li"), function(index, item) {
+					if($(item).find("a").text().indexOf( searchValue ) != -1 ) {
+						$(item).removeClass("ui-screen-hidden");
+					}else{
+						$(item).addClass("ui-screen-hidden");
+					}
+				});
+			});
 		});
-		function loadAnimesStartingWith(char) {
-			for(i in animeTitles) {
+		
+		function searchStringInArray (stringArray, searchString) {
+			var i = 0;
+			var result = Array();
+		    for (var j=0; j<stringArray.length; j++) {
+		        if (stringArray[j].match (searchString)) 
+						result.push(stringArray[j]);
+		    }
+		    return result;
+		}
+		
+		function loadAnimesStartingWith(searchString) {
+			for(i in searchStringInArray(animeList, searchString)) {
 				codeToAppend += "<li>" + animeTitles[i] + "</li>";
 			}
 			$('ul').empty().append(codeToAppend).listview('refresh');
@@ -43,11 +65,15 @@
 <div data-role="page">
 
 	<div data-role="header">
-		<h1>Anime Player2</h1>
+		<a id="btnRefresh" href="#" data-icon="refresh">Refresh</a>
+		<h1>Anime Player</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">	
-		<ul id="animelist" data-role="listview" data-filter="true" data-theme="d">
+		<div>
+			<input placeholder="Filter items..." type="search" name="search" id="search" value="" />
+		</div>
+		<ul id="animelist" data-role="listview">
 			<li>Downloading...</li>
 		</ul>
 				
