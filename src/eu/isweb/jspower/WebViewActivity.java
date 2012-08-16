@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +34,8 @@ public class WebViewActivity extends Activity {
 		if(!DEVELOPER_MODE)
 			//remove application title bar
 			this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		else
+			this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		
 		setContentView(R.layout.activity_web_view);
 
@@ -55,9 +58,15 @@ public class WebViewActivity extends Activity {
 			}
 		});
 		browser.setWebChromeClient(new WebChromeClient() {
-			  public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-				  jsPower.log(message + "line " + lineNumber + " of " + sourceID);
-			  }
+			@Override
+			public void onProgressChanged(WebView view, int newProgress) {
+				setProgressBarIndeterminateVisibility((newProgress < 100 && newProgress > 0));
+				super.onProgressChanged(view, newProgress);
+			}
+			
+			public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+				jsPower.log(message + "line " + lineNumber + " of " + sourceID);
+			}
 		});
 		
 		browserSettings = browser.getSettings();
@@ -94,6 +103,7 @@ public class WebViewActivity extends Activity {
 		pref = getSharedPreferences(IDs.devIP, Activity.MODE_PRIVATE);
 		
 		if (pref.getString("ip","") != "" && force == false) {
+			URL = "http://" + pref.getString("ip","") + "/index.html";
 			browser.loadUrl("http://" + pref.getString("ip","") + "/index.html");
 			return;
 		}
@@ -147,12 +157,14 @@ public class WebViewActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
 	        case R.id.menu_refresh:
+	        	browser.stopLoading();
 	            browser.reload();
 	            return true;
 	        case R.id.menu_changeIP:
 	        	connectIPMode(true);
 	            return true;
 	        case R.id.menu_home:
+	        	browser.stopLoading();
 	        	browser.loadUrl(URL);
 	            return true;
 	        case R.id.menu_error:

@@ -1,85 +1,46 @@
 <!DOCTYPE html> 
 <html> 
 <head>  
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
-	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.js"></script>
-	<script src="jsPower.js"></script>
-	<script type="text/javascript">
-		console.log("hello there");
-		var engine = new jsPowerEngine();
-		var animeList = new Array();
-		$(function() {
-			engine.parseHTMLtag(
-				"http://www.anime-shinden.info/index.php?do=cat&category=online-glowna", "a", function(data) {
-					
-					for(i in data) {
-						if(data[i].text == ".hack//Roots") {
-							data.splice(0, i);
-						}
-						if(data[i].text == "Zombie Loan") {
-							data.splice(i+1,data.length-1);
-						}
-					}
-					animeList = data;
-					var codeToAppend = "";
-					for(i in animeList) {
-						codeToAppend += "<li class='ui-screen-hidden'>" + animeList[i].html + "</li>";
-					}
-					$('ul').empty().append(codeToAppend).listview('refresh');
-			}, true);
-			$("#search").bind( "keyup change", function() {
-				var searchValue = $("#search").val();
-				engine.alert(searchValue);
-				$.each($("li"), function(index, item) {
-					if($(item).find("a").text().indexOf( searchValue ) != -1 ) {
-						$(item).removeClass("ui-screen-hidden");
-					}else{
-						$(item).addClass("ui-screen-hidden");
-					}
-				});
-			});
-		});
-		
-		function searchStringInArray (stringArray, searchString) {
-			var i = 0;
-			var result = Array();
-		    for (var j=0; j<stringArray.length; j++) {
-		        if (stringArray[j].match (searchString)) 
-						result.push(stringArray[j]);
-		    }
-		    return result;
-		}
-		
-		function loadAnimesStartingWith(searchString) {
-			for(i in searchStringInArray(animeList, searchString)) {
-				codeToAppend += "<li>" + animeTitles[i] + "</li>";
-			}
-			$('ul').empty().append(codeToAppend).listview('refresh');
-		}
-	</script>
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
+        <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.js"></script>
+        <script src="jsPower.js"></script>
+        <script type="text/javascript">
+        
+                var engine = new jsPowerEngine();
+                var mangaList = new Array();
+                $(function() {
+                        engine.parseHTMLtag(
+                                "http://www.manga-lib.pl/index.php/manga/directory", "a[href^=http://www.manga-lib.pl/index.php/manga/info/", function(data) {
+ 
+                                        engine.alert("Parsed!");
+                                        mangaList = data;
+                                        var codeToAppend = "";
+                                        for(i in mangaList) {
+                                                console.log(mangaList[i]);
+                                                codeToAppend += "<li>" + mangaList[i].html + "</li>";
+                                        }
+                                        $('ul').empty().append(codeToAppend).listview('refresh');
+                        }, true);
+                                                
+                                
+                });
+        </script>
 </head> 
 <body> 
-
+ 
 <div data-role="page">
-
-	<div data-role="header">
-		<a id="btnRefresh" href="#" data-icon="refresh">Refresh</a>
-		<h1>Anime Player</h1>
-	</div><!-- /header -->
-
-	<div data-role="content">	
-		<div>
-			<input placeholder="Filter items..." type="search" name="search" id="search" value="" />
-		</div>
-		<ul id="animelist" data-role="listview">
-			<li>Downloading...</li>
-		</ul>
-				
-	</div><!-- /content -->
-
+ 
+        <div data-role="header">
+                <h1>Manga Viewer</h1>
+        </div><!-- /header -->
+        <ul data-role="listview">
+                <li>Downloading Data...</li>
+        </ul>
+        <!-- /content -->
+ 
 </div><!-- /page -->
-
+ 
 </body>
 </html>
